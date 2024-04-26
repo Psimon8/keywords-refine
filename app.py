@@ -95,7 +95,7 @@ def main():
     french_phrases = [" pour ", " les ", " la ", " l ", " de ", " en ", " d ", " du ", " le "]
     replacements = {}
     for phrase in french_phrases:
-        replacements[phrase] = st.checkbox(f"Replace '{phrase}'?", value=True)
+        replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
 
     input_text = st.text_area("Enter your keywords (comma-separated):")
     if input_text:
