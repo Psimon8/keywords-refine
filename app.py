@@ -104,11 +104,6 @@ def main():
         column = columns[idx % num_columns]
         replacements[phrase] = column.checkbox(f"Replace '{phrase}'?", value=True)
 
-    # Optional: Add logic for further processing with the checkboxes
-    st.write("Checkbox states:")
-    for phrase, is_checked in replacements.items():
-        st.write(f"{phrase}: {'Checked' if is_checked else 'Unchecked'}")
-
 if __name__ == "__main__":
     main()
 
