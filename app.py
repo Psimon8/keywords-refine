@@ -91,23 +91,27 @@ def unique_keyword_refinement(values, replacements):
 def main():
     st.title("Keyword Refine")
 
-    # Define specific French phrases and create checkboxes
+    # Define specific French phrases and create checkboxes with 6 per row
     french_phrases = [" pour ", " les ", " la ", " l ", " de ", " en ", " d ", " du ", " le "]
     replacements = {}
-    for phrase in french_phrases:
-        replacements[phrase] = st.checkbox(f"Replace '{phrase}'?", value=True)
 
-    input_text = st.text_area("Enter your keywords (comma-separated):")
-    if input_text:
-        raw_values = input_text.split(",")
+    # Group the phrases into rows of 6 columns each
+    num_columns = 6
+    columns = st.columns(num_columns)
 
-        final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
+    # Display checkboxes with 6 per row
+    for idx, phrase in enumerate(french_phrases):
+        column = columns[idx % num_columns]
+        replacements[phrase] = column.checkbox(f"Replace '{phrase}'?", value=True)
 
-        st.header("Unique Keywords")
-        st.write(", ".join(final_values))
+    # Optional: Add logic for further processing with the checkboxes
+    st.write("Checkbox states:")
+    for phrase, is_checked in replacements.items():
+        st.write(f"{phrase}: {'Checked' if is_checked else 'Unchecked'}")
 
-        st.header("Trash")
-        st.write(", ".join(trash_values))
+if __name__ == "__main__":
+    main()
+
 
 
 if __name__ == "__main__":
