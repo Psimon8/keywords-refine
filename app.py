@@ -98,7 +98,7 @@ def unique_keyword_refinement(values):
 
 
 def main():
-    st.title("Keyword Refinement")
+    st.title("Keyword Refine")
     input_text = st.text_area("Enter your keywords (comma-separated):")
     if input_text:
         raw_values = input_text.split(",")
