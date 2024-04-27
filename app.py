@@ -4,7 +4,7 @@ import pandas as pd
 
 st.set_page_config(
     layout="wide",
-    page_title="Keyword lapin",
+    page_title="Keyword RTess",
     page_icon="🍉"
 )
 
