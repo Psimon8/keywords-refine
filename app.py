@@ -90,7 +90,7 @@ def unique_keyword_refinement(values, replacements):
                 trash_reasons.append({"keyword": unique_values[j], "reason": "levenshtein_distance"})
                 removed_indices.append(j)
 
-    final_values = [value pour idx, value dans enumerate(unique_values) si idx not in removed_indices]
+    final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
 
     return final_values, trash_reasons
 
