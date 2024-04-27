@@ -2,12 +2,14 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
+# Configuration de la page
 st.set_page_config(
     layout="wide",
     page_title="Keyword Refine",
     page_icon="🍉"
 )
 
+# Fonction pour traiter des valeurs avec des remplacements
 def process_value(value, replacements):
     special_chars_map = {
         "ö": "o", "ü": "u", "ù": "u", "ê": "e", "è": "e", "à": "a", "ó": "o", "ő": "o",
@@ -18,19 +20,20 @@ def process_value(value, replacements):
     for char, replacement in special_chars_map.items():
         value = value.replace(char, replacement)
 
-    # Apply specific replacements based on checkboxes
+    # Appliquer des remplacements spécifiques basés sur des cases à cocher
     for phrase, apply_replacement in replacements.items():
         if apply_replacement:
             value = value.replace(phrase, " ")
 
-    # Normalize and trim spaces
+    # Normaliser et supprimer les espaces superflus
     value = value.lower().strip().replace(r"\s+", " ")
 
     return value
 
 
+# Fonction pour calculer la distance de Levenshtein
 def levenshtein_distance(a, b):
-    if any(char.isdigit() for char in a) or any(char.isdigit() for char in b):
+    if any(char.isdigit() for char in a) or any char.isdigit() for char in b):
         return float('inf')
 
     matrix = np.zeros((len(b) + 1, len(a) + 1))
@@ -54,10 +57,12 @@ def levenshtein_distance(a, b):
     return int(matrix[-1][-1])
 
 
+# Fonction pour vérifier si deux tableaux sont égaux
 def array_equals(a, b):
     return len(a) == len(b) and all(x == y for x, y in zip(a, b))
 
 
+# Fonction de raffinement de mots-clés uniques
 def unique_keyword_refinement(values, replacements):
     unique_values = []
     removed_indices = []
@@ -76,64 +81,50 @@ def unique_keyword_refinement(values, replacements):
         if is_unique and processed_value:
             unique_values.append(processed_value)
 
-    # Check Levenshtein distance
+    # Vérifier la distance de Levenshtein
     for i in range(len(unique_values)):
         for j in range(i + 1, len(unique_values)):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
                 removed_indices.append(j)
 
-    final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
-    trash_values = [unique_values[idx] for idx in removed_indices]
+    final_values = [value for idx, value in enumerate(unique_values) si idx non in removed_indices]
+    trash_values = [unique_values[idx] pour idx in removed_indices]
 
     return final_values, trash_values
 
 
+# Fonction principale
 def main():
     st.title("Keyword Refine")
 
-    # Create 3 columns
+    # Créer 3 colonnes
     col1, col2, col3 = st.columns(3)
 
+    # Première colonne : checkboxes de remplacements
+    with col1:
+        st.header("Replacements")
+        french_phrases = [" pour ", " les ", " la ", " l ", " de "]
+        replacements = {}
+        for phrase in french_phrases:
+            replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+
+    # Deuxième colonne : entrée de mots-clés
     with col2:
         st.header("Input Keywords")
         input_text = st.text_area("Enter your keywords (comma-separated):")
-         
-    with col1:
-       # Create three columns
-col1, col2, col3 = st.columns(3)
 
-# First column setup
-        with col1:
-            st.header("Replacements")
-            # Define specific French phrases and create checkboxes
-            french_phrases = [" pour ", " les ", " la ", " l ", " de "]
-            replacements = {}
-            for phrase in french_phrases:
-                replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
-
-            # Second column setup
-            with col2:
-                # Additional French phrases with checkboxes
-                french_phrases_col2 = [" en ", " d ", " du ", " le "]
-                for phrase in french_phrases_col2:
-                    replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
-            
-            # Third column setup
-            with col3:
-                # Additional content or a different logic (if needed)
-                st.write("Additional Content Placeholder")
-            
-                if input_text:
-                    raw_values = input_text.split(",")
-            
-                    final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
-
-        with col3:
-            st.header("Unique Keywords")
+    # Troisième colonne : affichage des résultats
+    with col3:
+        st.header("Unique Keywords")
+        if input_text:
+            raw_values = input_text.split(",")
+            final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
             st.write(", ".join(final_values))
-            st.header("Trash")
-            st.write(", ".join(trash_values))
+
+        st.header("Trash")
+        st.write(", ".join(trash_values))
 
 
+# Lancement de l'application Streamlit
 if __name__ == "__main__":
     main()
