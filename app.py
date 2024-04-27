@@ -87,7 +87,7 @@ def unique_keyword_refinement(values, replacements):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
                 removed_indices.append(j)
 
-    final_values = [value for idx, value in enumerate(unique_values) si idx non in removed_indices]
+    final_values = [value for idx, value in enumerate(unique_values) if idx non in removed_indices]
     trash_values = [unique_values[idx] pour idx in removed_indices]
 
     return final_values, trash_values
