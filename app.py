@@ -111,7 +111,7 @@ def main():
     # Deuxième colonne : entrée de mots-clés
     with col2:
         st.header("Input Keywords")
-        input_text = st.text_area("Entrez vos mots-clés (séparés par des retours à la ligne):")
+        input_text = st.text_area("Enter your keywords (comma-separated):")
 
   # Troisième colonne : affichage des résultats
     with col3:
