@@ -94,11 +94,11 @@ def main():
     # Create 3 columns
     col1, col2, col3 = st.columns(3)
 
-    with col1:
+    with col2:
         st.header("Input Keywords")
         input_text = st.text_area("Enter your keywords (comma-separated):")
          
-    with col3:
+    with col1:
         st.header("Replacements")
         # Define specific French phrases and create checkboxes
         french_phrases = [" pour ", " les ", " la ", " l ", " de ", " en ", " d ", " du ", " le "]
@@ -111,7 +111,7 @@ def main():
 
         final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
 
-        with col2:
+        with col3:
             st.header("Unique Keywords")
             st.write(", ".join(final_values))
             st.header("Trash")
