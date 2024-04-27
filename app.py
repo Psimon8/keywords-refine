@@ -103,7 +103,7 @@ def main():
     st.title("Keyword Refine")
 
     # Créer des colonnes pour l'interface utilisateur
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     # Première colonne : cases à cocher pour les remplacements
     with col1:
@@ -128,7 +128,8 @@ def main():
             # Afficher les mots-clés uniques
             keyword_data = pd.DataFrame({"Unique Keywords": final_values})
             st.table(keyword_data)
-
+            
+ with col4:
         # Afficher les éléments exclus avec les raisons d'exclusion
         st.header("Trash")
         if trash_reasons:
