@@ -30,7 +30,7 @@ def process_value(value, replacements):
 
 
 def levenshtein_distance(a, b):
-    if any(char.isdigit() for char in a) or any(char.isdigit() for char in b):
+    if any(char.isdigit() for char in a) or any char.isdigit() in b):
         return float('inf')
 
     matrix = np.zeros((len(b) + 1, len(a) + 1))
@@ -82,7 +82,7 @@ def unique_keyword_refinement(values, replacements):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
                 removed_indices.append(j)
 
-    final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
+    final_values = [value for idx, value in enumerate(unique_values) if idx not in removed indices]
     trash_values = [unique_values[idx] for idx in removed_indices]
 
     return final_values, trash_values
@@ -90,24 +90,34 @@ def unique_keyword_refinement(values, replacements):
 
 def main():
     st.title("Keyword Refine")
-    
-    # Define specific French phrases and create checkboxes
-    french_phrases = [" pour ", " les ", " la ", " l ", " de ", " en ", " d ", " du ", " le "]
-    replacements = {}
-    for phrase in french_phrases:
-        replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
 
-    input_text = st.text_area("Enter your keywords (comma-separated):")
+    # Create 3 columns
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.header("Input Keywords")
+        input_text = st.text_area("Enter your keywords (comma-separated):")
+
+    with col3:
+        st.header("Replacements")
+        # Define specific French phrases and create checkboxes
+        french_phrases = [" pour ", " les ", " la ", " l ", " de ", " en ", " d ", " du ", " le "]
+        replacements = {}
+        for phrase in french_phrases:
+            replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+
     if input_text:
         raw_values = input_text.split(",")
 
         final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
 
-        st.header("Unique Keywords")
-        st.write(", ".join(final_values))
+        with col2:
+            st.header("Trash")
+            st.write(", ".join(trash_values))
 
-        st.header("Trash")
-        st.write(", ".join(trash_values))
+        with col1:
+            st.header("Unique Keywords")
+            st.write(", ".join(final_values))
 
 
 if __name__ == "__main__":
