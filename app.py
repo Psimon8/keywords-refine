@@ -98,7 +98,7 @@ def main():
     st.title("Keyword Refine")
 
     # Créer 3 colonnes
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     # Première colonne : checkboxes de remplacements
     with col1:
@@ -120,7 +120,8 @@ def main():
             raw_values = input_text.split("\n")
             final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
             st.write(", ".join(final_values))
-
+            
+    with col4:
         st.header("Trash")
         st.write(", ".join(trash_values))
 
