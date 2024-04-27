@@ -106,7 +106,7 @@ def main():
         french_phrases = [" pour ", " les ", " la ", " l ", " de "]
         replacements = {}
         for phrase in french_phrases:
-            replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+            replacements[phrase] = st.checkbox(f"{phrase}", value=True)
 
     # Deuxième colonne : entrée de mots-clés
     with col2:
