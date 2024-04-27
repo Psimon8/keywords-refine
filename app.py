@@ -18,8 +18,8 @@ def process_value(value, replacements):
     }
 
     # Remplacer les caractères spéciaux
-    for char, replacement in special_chars_map.items():
-        value = value.replace(char, replacement)
+    for key, replacement in special_chars_map.items():
+        value = value.replace(key, replacement)
 
     # Appliquer des remplacements spécifiques basés sur des cases à cocher
     for phrase, apply_replacement in replacements.items():
@@ -34,7 +34,7 @@ def process_value(value, replacements):
 
 # Fonction for calculer la distance de Levenshtein
 def levenshtein_distance(a, b):
-    if any(char.isdigit() for char in a) or any(char.isdigit() in b):
+    if any(c.isdigit() for char in a) or any(c.isdigit() in b):
         return float('inf')
 
     # Création de la matrice
