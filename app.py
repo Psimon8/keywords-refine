@@ -113,18 +113,23 @@ def main():
         st.header("Input Keywords")
         input_text = st.text_area("Enter your keywords (comma-separated):")
 
-    # Troisième colonne : affichage des résultats
+  # Troisième colonne : affichage des résultats
     with col3:
         st.header("Unique Keywords")
         if input_text:
-            raw_values = input_text.split("\n")
+            raw_values = input_text.split("\n")  # Utilisation de '\n' comme séparateur
             final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
-            st.write("\n".join(final_values))
             
+            # Afficher les mots-clés uniques dans un tableau avec une ligne par mot clé
+            keyword_data = pd.DataFrame({"Unique Keywords": final_values})
+            st.table(keyword_data)
+
+            
+# Afficher les éléments dans le trash dans un tableau avec une ligne par mot clé
     with col4:
         st.header("Trash")
-        st.write("\n".join(trash_values))
-
+        trash_data = pd.DataFrame({"Trash": trash_values})
+        st.table(trash_data)
 
 # Lancement de l'application Streamlit
 if __name__ == "__main__":
