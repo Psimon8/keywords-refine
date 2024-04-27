@@ -1,15 +1,16 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import re  # Ajouté pour gérer les expressions régulières
 
-# Configuration de la page
+# Configuration de la page Streamlit
 st.set_page_config(
     layout="wide",
     page_title="Keyword Refine",
     page_icon="🍉"
 )
 
-# Fonction for traiter des valeurs avec des remplacements
+# Fonction de traitement des valeurs avec des remplacements
 def process_value(value, replacements):
     special_chars_map = {
         "ö": "o", "ü": "u", "ù": "u", "ê": "e", "è": "e", "à": "a", "ó": "o", "ő": "o",
@@ -21,27 +22,26 @@ def process_value(value, replacements):
     for key, replacement in special_chars_map.items():
         value = value.replace(key, replacement)
 
-    # Appliquer des remplacements spécifiques basés sur des cases à cocher
+    # Appliquer des remplacements spécifiques
     for phrase, apply_replacement in replacements.items():
         if apply_replacement:
             value = value.replace(phrase, " ")
 
     # Normaliser et supprimer les espaces superflus
-    value = value.lower().strip().replace(r"\s+", " ")
+    value = re.sub(r"\s+", " ", value.lower()).strip()
 
     return value
 
-
-# Fonction for calculer la distance de Levenshtein
+# Fonction de calcul de la distance de Levenshtein
 def levenshtein_distance(a, b):
-    if any(c.isdigit() for char in a) or any(c.isdigit() in b):
+    if any(c.isdigit() for c in a) or any(c.isdigit() for c in b):  # Correction de la logique
         return float('inf')
 
     # Création de la matrice
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
         matrix[i][0] = i
-    for j in range(1, len(a) + 1):
+    for j in range(len(a) + 1):
         matrix[0][j] = j
 
     # Calculer les distances
@@ -53,16 +53,15 @@ def levenshtein_distance(a, b):
                 cost = 1
                 matrix[i][j] = min(
                     matrix[i - 1][j] + cost,
-                    matrix[i][j - 1] + cost,
-                    matrix [i - 1][j - 1] + cost,
+                    matrix[j - 1][i] + cost,
+                    matrix[i - 1][j - 1] + cost
                 )
 
     return int(matrix[-1][-1])
 
-
-  # Fonction pour comparer deux tableaux
+# Fonction de comparaison de tableaux
 def array_equals(a, b):
-    return len(a) == len(b) and all(x == y for x, y in zip(a, b))  
+    return len(a) == len(b) and all(x == y for x, y in zip(a, b))
 
 # Fonction de raffinement des mots-clés uniques avec explications des raisons d'exclusion
 def unique_keyword_refinement(values, replacements):
@@ -75,7 +74,7 @@ def unique_keyword_refinement(values, replacements):
         processed_value = process_value(raw_value, replacements)
         words = sorted(processed_value.split(" "))
 
-        # Vérifier if le mot clé est unique
+        # Vérifier si le mot clé est unique
         is_unique = True
         for unique in unique_values:
             if array_equals(sorted(unique.split(" ")), words):
@@ -99,24 +98,20 @@ def unique_keyword_refinement(values, replacements):
 
     return final_values, trash_reasons
 
-
 # Fonction principale
 def main():
-    # Initialiser 'trash_reasons' au début de la fonction
-    trash_reasons = []
-
     st.title("Keyword Refine")
 
-    # Créer 3 colonnes
+    # Créer des colonnes pour l'interface utilisateur
     col1, col2, col3 = st.columns(3)
 
-    # Première colonne : cases à cocher for les remplacements
+    # Première colonne : cases à cocher pour les remplacements
     with col1:
         st.header("Replacements")
         french_phrases = [" for ", " les ", " la ", " l ", " de "]
         replacements = {}
         for phrase in french_phrases:
-            replacements[phrase] = st.checkbox(f"{phrase}", value=True)
+            replacements[phrase] = st.checkbox(phrase.strip(), value=True)  # Correction
 
     # Deuxième colonne : entrée de mots-clés
     with col2:
@@ -130,18 +125,17 @@ def main():
             raw_values = input_text.split("\n")
             final_values, trash_reasons = unique_keyword_refinement(raw_values, replacements)
 
-            # Afficher les mots-clés uniques in un tableau avec une ligne par mot clé
+            # Afficher les mots-clés uniques
             keyword_data = pd.DataFrame({"Unique Keywords": final_values})
             st.table(keyword_data)
 
-        # Afficher les éléments exclus avec la raison d'exclusion
+        # Afficher les éléments exclus avec les raisons d'exclusion
         st.header("Trash")
         if trash_reasons:
             trash_data = pd.DataFrame(trash_reasons)
             st.table(trash_data)
         else:
             st.write("Aucun mot clé exclu.")
-
 
 # Lancement de l'application Streamlit
 if __name__ == "__main__":
