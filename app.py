@@ -129,7 +129,7 @@ def main():
             keyword_data = pd.DataFrame({"Unique Keywords": final_values})
             st.table(keyword_data)
             
- with col4:
+     with col4:
         # Afficher les éléments exclus avec les raisons d'exclusion
         st.header("Trash")
         if trash_reasons:
