@@ -129,14 +129,17 @@ def main():
             keyword_data = pd.DataFrame({"Unique Keywords": final_values})
             st.table(keyword_data)
             
-     with col4:
+    with col4:  # Indentation correcte pour le bloc
         # Afficher les éléments exclus avec les raisons d'exclusion
-        st.header("Trash")
-        if trash_reasons:
-            trash_data = pd.DataFrame(trash_reasons)
-            st.table(trash_data)
-        else:
-            st.write("Aucun mot clé exclu.")
+        st.header("Trash")  # Titre de la section des éléments exclus
+    
+        if trash_reasons:  # Vérifier s'il y a des éléments exclus
+            # Afficher les éléments exclus sous forme de tableau
+            trash_data = pd.DataFrame(trash_reasons)  # Convertir en DataFrame
+            st.table(trash_data)  # Afficher le tableau
+        else:  # Si aucun élément exclu
+            st.write("Aucun mot clé exclu.")  # Afficher un message indiquant qu'il n'y a rien à exclure
+
 
 # Lancement de l'application Streamlit
 if __name__ == "__main__":
