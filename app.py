@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import re
 
 st.set_page_config(
     layout="wide",
@@ -24,14 +25,15 @@ def process_value(value, replacements):
             value = value.replace(phrase, " ")
 
     # Normalize and trim spaces
-    value = value.lower().strip().replace(r"\s+", " ")
+    value = value.lower().strip()
+    value = re.sub(r"\s+", " ", value)  # Normalize multiple spaces into one
 
     return value
 
 
 def levenshtein_distance(a, b):
-    if any(char.isdigit() for char in a) or any(char.isdigit() for char in b):
-        return float('inf')
+    if any(char.isdigit() for char in a) or any char.isdigit() for char in b):
+        return float("inf")
 
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
@@ -97,9 +99,11 @@ def main():
     for phrase in french_phrases:
         replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
 
-    input_text = st.text_area("Enter your keywords (comma-separated):")
+    # Allow multiple separators for splitting keywords
+    input_text = st.text_area("Enter your keywords (comma, semicolon, or newline separated):")
     if input_text:
-        raw_values = input_text.split(",")
+        # Split by commas, semicolons, or newlines
+        raw_values = re.split(r"[,\n;]+", input_text)
 
         final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
 
