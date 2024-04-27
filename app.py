@@ -88,7 +88,7 @@ def unique_keyword_refinement(values, replacements):
                 removed_indices.append(j)
 
     final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
-    trash_values = [unique_values[idx] pour idx in removed_indices]
+    trash_values = [unique_values[idx] for idx in removed_indices]
 
     return final_values, trash_values
 
