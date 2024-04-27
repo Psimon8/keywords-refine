@@ -57,7 +57,7 @@ def levenshtein_distance(a, b):
                     matrix [i - 1][j - 1] + cost,
                 )
 
-    return int(matrix[-1][-1)
+    return int(matrix[-1][-1])
 
 
 # Fonction de raffinement des mots-clés uniques avec explications des raisons d'exclusion
