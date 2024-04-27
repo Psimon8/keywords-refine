@@ -39,14 +39,14 @@ def levenshtein_distance(a, b):
 
     # Création de la matrice
     matrix = np.zeros((len(b) + 1, len(a) + 1))
-    for i dans range(len(b) + 1):
+    for i in range(len(b) + 1):
         matrix[i][0] = i
-    pour j dans range(len(a) + 1):
+    for j in range(len(a) + 1):
         matrix[0][j] = j
 
     # Calculer les distances
-    pour i dans range 1, len(b) + 1):
-        pour j dans range(1, len(a) + 1):
+    for i in range 1, len(b) + 1):
+        for j in range(1, len(a) + 1):
             if b[i - 1] == a[j - 1]:
                 matrix[i][j] = matrix[i - 1][j - 1]
             else:
