@@ -97,10 +97,6 @@ def main():
     with col1:
         st.header("Input Keywords")
         input_text = st.text_area("Enter your keywords (comma-separated):")
-
-    with col1:
-            st.header("Unique Keywords")
-            st.write(", ".join(final_values))
          
     with col3:
         st.header("Replacements")
@@ -116,12 +112,10 @@ def main():
         final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
 
         with col2:
-            st.header("Trash")
-            st.write(", ".join(trash_values))
-
-        with col1:
             st.header("Unique Keywords")
             st.write(", ".join(final_values))
+            st.header("Trash")
+            st.write(", ".join(trash_values))
 
 
 if __name__ == "__main__":
