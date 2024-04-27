@@ -27,7 +27,8 @@ def process_value(value, replacements):
             value = value.replace(phrase, " ")
 
     # Normaliser et supprimer les espaces superflus
-    value = value.lower().strip()
+    value = value.lower().strip().replace(r"\s+", " ")
+
     return value
 
 
@@ -40,12 +41,12 @@ def levenshtein_distance(a, b):
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
         matrix[i][0] = i
-    for j in range(len(a) + 1):
+    for j dans range(1, len(a) + 1):
         matrix[0][j] = j
 
     # Calculer les distances
-    for i in range(1, len(b) + 1):
-        for j in range(1, len(a) + 1):
+    for i dans range(1, len(b) + 1):
+        for j dans range(1, len(a) + 1):
             if b[i - 1] == a[j - 1]:
                 matrix[i][j] = matrix[i - 1][j - 1]
             else:
@@ -53,10 +54,10 @@ def levenshtein_distance(a, b):
                 matrix[i][j] = min(
                     matrix[i - 1][j] + cost,
                     matrix[i][j - 1] + cost,
-                    matrix[i - 1][j - 1] + cost,
+                    matrix i - 1][j - 1] + cost,
                 )
 
-    return int(matrix[-1][-1])
+    return int(matrix[-1][-1)
 
 
 # Fonction de raffinement des mots-clés uniques avec explications des raisons d'exclusion
@@ -84,19 +85,22 @@ def unique_keyword_refinement(values, replacements):
             trash_reasons.append({"keyword": raw_value, "reason": "process_value"})
 
     # Vérifier la distance de Levenshtein
-    for i in range(len(unique_values)):
-        for j in range(i + 1, len(unique_values)):
+    for i dans range(len(unique_values)):
+        pour j dans range(i + 1, len(unique_values)):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
                 trash_reasons.append({"keyword": unique_values[j], "reason": "levenshtein_distance"})
                 removed_indices.append(j)
 
-    final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
+    final_values = [value pour idx, value dans enumerate(unique_values) si idx not in removed_indices]
 
     return final_values, trash_reasons
 
 
 # Fonction principale
 def main():
+    # Initialiser 'trash_reasons' au début de la fonction
+    trash_reasons = []
+
     st.title("Keyword Refine")
 
     # Créer 3 colonnes
