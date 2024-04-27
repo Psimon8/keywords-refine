@@ -103,30 +103,30 @@ def main():
 col1, col2, col3 = st.columns(3)
 
 # First column setup
-with col1:
-    st.header("Replacements")
-    # Define specific French phrases and create checkboxes
-    french_phrases = [" pour ", " les ", " la ", " l ", " de "]
-    replacements = {}
-    for phrase in french_phrases:
-        replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+        with col1:
+            st.header("Replacements")
+            # Define specific French phrases and create checkboxes
+            french_phrases = [" pour ", " les ", " la ", " l ", " de "]
+            replacements = {}
+            for phrase in french_phrases:
+                replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
 
-# Second column setup
-with col2:
-    # Additional French phrases with checkboxes
-    french_phrases_col2 = [" en ", " d ", " du ", " le "]
-    for phrase in french_phrases_col2:
-        replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
-
-# Third column setup
-with col3:
-    # Additional content or a different logic (if needed)
-    st.write("Additional Content Placeholder")
-
-    if input_text:
-        raw_values = input_text.split(",")
-
-        final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
+            # Second column setup
+            with col2:
+                # Additional French phrases with checkboxes
+                french_phrases_col2 = [" en ", " d ", " du ", " le "]
+                for phrase in french_phrases_col2:
+                    replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+            
+            # Third column setup
+            with col3:
+                # Additional content or a different logic (if needed)
+                st.write("Additional Content Placeholder")
+            
+                if input_text:
+                    raw_values = input_text.split(",")
+            
+                    final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
 
         with col3:
             st.header("Unique Keywords")
