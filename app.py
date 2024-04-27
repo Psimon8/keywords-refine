@@ -45,17 +45,16 @@ def levenshtein_distance(a, b):
         matrix[0][j] = j
 
     # Calculer les distances
-    for i in range 1, len(b) + 1):
-        for j in range(1, len(a) + 1):
-            if b[i - 1] == a[j - 1]:
-                matrix[i][j] = matrix[i - 1][j - 1]
-            else:
-                cost = 1
-                matrix[i][j] = min(
-                    matrix[i - 1][j] + cost,
-                    matrix[i][j - 1] + cost,
-                    matrix i - 1][j - 1] + cost,
-                )
+    for j in range(1, len(a) + 1):  # Correction de la syntaxe pour 'range'
+        if b[i - 1] == a[j - 1]:
+            matrix[i][j] = matrix[i - 1][j - 1]
+        else:
+            cost = 1
+            matrix[i][j] = min(
+                matrix[i - 1][j] + cost,
+                matrix[i][j - 1] + cost,
+                matrix[i - 1][j - 1] + cost,  # Correction de l'emplacement de la parenthèse fermante
+            )
 
     return int(matrix[-1][-1)
 
