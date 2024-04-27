@@ -15,7 +15,7 @@ def process_value(value, replacements):
     special_chars_map = {
         "ö": "o", "ü": "u", "ù": "u", "ê": "e", "è": "e", "à": "a", "ó": "o", "ő": "o",
         "ú": "u", "é": "e", "á": "a", "ű": "u", "í": "i", "ô": "o", "ï": "i", "ç": "c",
-        "ñ": "n", "'": " ", ".": " ", " ": " ", "-": " "
+        "ñ": "n", "'": " ", ".": " ", " ": " ", "-": " ","â": "a"
     }
 
     # Remplacer les caractères spéciaux
