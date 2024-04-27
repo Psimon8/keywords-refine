@@ -98,6 +98,10 @@ def main():
         st.header("Input Keywords")
         input_text = st.text_area("Enter your keywords (comma-separated):")
 
+    with col1:
+            st.header("Unique Keywords")
+            st.write(", ".join(final_values))
+         
     with col3:
         st.header("Replacements")
         # Define specific French phrases and create checkboxes
