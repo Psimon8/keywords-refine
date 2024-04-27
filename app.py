@@ -117,7 +117,7 @@ def main():
     with col3:
         st.header("Unique Keywords")
         if input_text:
-            raw_values = input_text.split(",")
+            raw_values = input_text.split("\n")
             final_values, trash_values = unique_keyword_refinement(raw_values, replacements)
             st.write(", ".join(final_values))
 
