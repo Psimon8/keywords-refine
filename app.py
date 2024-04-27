@@ -99,12 +99,29 @@ def main():
         input_text = st.text_area("Enter your keywords (comma-separated):")
          
     with col1:
-        st.header("Replacements")
-        # Define specific French phrases and create checkboxes
-        french_phrases = [" pour ", " les ", " la ", " l ", " de ", " en ", " d ", " du ", " le "]
-        replacements = {}
-        for phrase in french_phrases:
-            replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+       # Create three columns
+col1, col2, col3 = st.columns(3)
+
+# First column setup
+with col1:
+    st.header("Replacements")
+    # Define specific French phrases and create checkboxes
+    french_phrases = [" pour ", " les ", " la ", " l ", " de "]
+    replacements = {}
+    for phrase in french_phrases:
+        replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+
+# Second column setup
+with col2:
+    # Additional French phrases with checkboxes
+    french_phrases_col2 = [" en ", " d ", " du ", " le "]
+    for phrase in french_phrases_col2:
+        replacements[phrase] = st.checkbox(f"'{phrase}'?", value=True)
+
+# Third column setup
+with col3:
+    # Additional content or a different logic (if needed)
+    st.write("Additional Content Placeholder")
 
     if input_text:
         raw_values = input_text.split(",")
