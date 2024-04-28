@@ -147,6 +147,23 @@ def main():
 
             keyword_data = pd.DataFrame({"Unique Keywords": final_values})
             st.table(keyword_data)
+            
+             # Créer un flux binaire pour le fichier Excel
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                keyword_data.to_excel(writer, sheet_name="Unique Keywords", index=False)
+                writer.save()
+            # Positionner le curseur au début du flux
+            output.seek(0)
+
+            # Ajouter un bouton de téléchargement
+            st.download_button(
+                label="Télécharger les mots-clés uniques",
+                data=output,
+                file_name="unique_keywords.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
 
     with col4:
         st.header("Trash")
