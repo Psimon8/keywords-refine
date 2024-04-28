@@ -32,7 +32,7 @@ def process_value(value, replacements):
 
 # Fonction de calcul de la distance de Levenshtein
 def levenshtein_distance(a, b):
-    if any(c.isdigit() for c in a) or any c.isdigit() for c in b):
+    if any(c.isdigit() for c in a) or any(c.isdigit() for c in b):
         return float('inf')
 
     matrix = np.zeros((len(b) + 1, len(a) + 1))
