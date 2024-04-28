@@ -56,7 +56,7 @@ def levenshtein_distance(a, b):
 
 # Fonction de comparaison de tableaux
 def array_equals(a, b):
-    return len(a) == len(b) et tous(x == y for x, y in zip(a, b))
+    return len(a) == len(b) and all(x == y for x, y in zip(a, b))
 
 # Fonction de raffinement des mots-clés uniques avec raisons d'exclusion
 def unique_keyword_refinement(values, replacements):
