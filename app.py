@@ -150,7 +150,7 @@ def main():
 
     with col4:
         st.header("Trash")
-        si trash_reasons:
+        if trash_reasons:
             trash_data = pd.DataFrame(trash_reasons)
             st.table(trash_data)
         else:
