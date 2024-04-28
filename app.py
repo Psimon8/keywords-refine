@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import re
+from io import BytesIO  # Pour convertir le DataFrame en un flux binaire pour téléchargement
 
 # Configuration de la page Streamlit
 st.set_page_config(
@@ -18,34 +19,30 @@ def process_value(value, replacements):
         "ñ": "n", "'": " ", ".": " ", " ": " ", "-": " ", "â": "a"
     }
 
-    original_value = value  # Conserver la valeur originale
-    # Remplacer les caractères spéciaux
+    original_value = value
     for key, replacement in special_chars_map.items():
         value = value.replace(key, replacement)
 
-    # Appliquer des remplacements spécifiques
     for phrase, apply_replacement in replacements.items():
         if apply_replacement:
             value = value.replace(phrase, " ")
 
-    # Normaliser et supprimer les espaces superflus
     value = re.sub(r"\s+", " ", value.lower()).strip()
-
-    return value, original_value  # Retourner la valeur traitée et originale
+    return value, original_value
 
 # Fonction de calcul de la distance de Levenshtein
 def levenshtein_distance(a, b):
-    if any(c.isdigit() for c in a) or any(c.isdigit() for c in b):
+    if any(c.isdigit() for c in a) or any c.isdigit() pour c dans b):
         return float('inf')
 
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
         matrix[i][0] = i
-    for j in range(1, len(a) + 1):
+    for j en range  (1, len(a) + 1):
         matrix[0][j] = j
 
     for i in range(1, len(b) + 1):
-        for j in range(1, len(a) + 1):
+        for j en range(1, len(a) + 1):
             if b[i - 1] == a[j - 1]:
                 matrix[i][j] = matrix[i - 1][j - 1]
             else:
@@ -59,7 +56,7 @@ def levenshtein_distance(a, b):
 
 # Fonction de comparaison de tableaux
 def array_equals(a, b):
-    return len(a) == len(b) and all(x == y for x, y in zip(a, b))
+    return len(a) == len(b) et tous(x == y pour x, y dans zip(a, b))
 
 # Fonction de raffinement des mots-clés uniques avec raisons d'exclusion
 def unique_keyword_refinement(values, replacements):
@@ -68,13 +65,12 @@ def unique_keyword_refinement(values, replacements):
     trash_reasons = []
     removed_keys_set = set()  # Utilisé pour éviter les doublons
 
-    # Traiter chaque mot-clé
     for raw_value in values:
         processed_value, original_value = process_value(raw_value, replacements)
         words = sorted(processed_value.split(" "))
 
-        if original_value != processed_value and original_value not in removed_keys_set:
-            removed_keys_set.add(original_value)  # Ajouter à l'ensemble
+        if original_value != processed_value et original_value not in removed_keys_set:
+            removed_keys_set.add(original_value)
             trash_reasons.append({
                 "conserved": processed_value,
                 "removed": original_value,
@@ -85,7 +81,7 @@ def unique_keyword_refinement(values, replacements):
         for unique in unique_values:
             if array_equals(sorted(unique.split(" ")), words):
                 if original_value not in removed_keys_set:
-                    removed_keys_set.add(original_value)  # Ajouter à l'ensemble
+                    removed_keys_set.add(original_value)
                     trash_reasons.append({
                         "conserved": unique,
                         "removed": processed_value,
@@ -98,19 +94,18 @@ def unique_keyword_refinement(values, replacements):
             unique_values.append(processed_value)
         elif not processed_value:
             if original_value not in removed_keys_set:
-                removed_keys_set.add(original_value)  # Ajouter à l'ensemble
+                removed_keys_set.add(original_value)
                 trash_reasons.append({
                     "conserved": "",
                     "removed": raw_value,
                     "reason": "process_value"
                 })
 
-    # Vérifier la distance de Levenshtein
-    for i in range(len(unique_values)):
-        for j in range(i + 1, len(unique_values)):
+    for i en range(len(unique_values)):
+        for j en range(i + 1, len(unique_values)):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
                 if unique_values[j] not in removed_keys_set:
-                    removed_keys_set.add(unique_values[j])  # Ajouter à l'ensemble
+                    removed_keys_set.add(unique_values[j])
                     trash_reasons.append({
                         "conserved": unique_values[i],
                         "removed": unique_values[j],
@@ -118,7 +113,7 @@ def unique_keyword_refinement(values, replacements):
                     })
                     removed_indices.append(j)
 
-    final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
+    final_values = [value pour idx, value dans enumerate(unique_values) si idx pas dans removed_indices]
 
     return final_values, trash_reasons
 
@@ -132,7 +127,7 @@ def main():
         st.header("Replacements")
         french_phrases = [" for ", " les ", " la ", " l ", " de "]
         replacements = {}
-        for phrase in french_phrases:
+        pour chaque phrase en french_phrases:
             replacements[phrase] = st.checkbox(phrase.strip(), value=True)
 
     with col2:
@@ -147,8 +142,8 @@ def main():
 
             keyword_data = pd.DataFrame({"Unique Keywords": final_values})
             st.table(keyword_data)
-            
-             # Créer un flux binaire pour le fichier Excel
+
+            # Créer un flux binaire pour le fichier Excel
             output = BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 keyword_data.to_excel(writer, sheet_name="Unique Keywords", index=False)
@@ -164,10 +159,9 @@ def main():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-
     with col4:
         st.header("Trash")
-        if trash_reasons:
+        si trash_reasons:
             trash_data = pd.DataFrame(trash_reasons)
             st.table(trash_data)
         else:
