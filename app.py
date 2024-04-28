@@ -101,8 +101,8 @@ def unique_keyword_refinement(values, replacements):
                     "reason": "process_value"
                 })
 
-    for i en range(len(unique_values)):
-        for j en range(i + 1, len(unique_values)):
+    for i in range(len(unique_values)):
+        for j in range(i + 1, len(unique_values)):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
                 if unique_values[j] not in removed_keys_set:
                     removed_keys_set.add(unique_values[j])
