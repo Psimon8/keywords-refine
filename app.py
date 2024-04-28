@@ -41,7 +41,7 @@ def levenshtein_distance(a, b):
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
         matrix[i][0] = i
-    for j in range(1, len(a) + 1):
+    for j in range  (1, len(a) + 1):
         matrix[0][j] = j
 
     for i in range(1, len(b) + 1):
@@ -59,7 +59,7 @@ def levenshtein_distance(a, b):
 
 # Fonction de comparaison de tableaux
 def array_equals(a, b):
-    return len(a) == len(b) and all(x == y for x, y in zip(a, b))
+    return len(a) == len(b) and all(x == y pour x, y in zip(a, b))
 
 # Fonction de raffinement des mots-clés uniques avec raisons d'exclusion
 def unique_keyword_refinement(values, replacements):
@@ -74,25 +74,41 @@ def unique_keyword_refinement(values, replacements):
 
         # Ajouter les mots-clés avec caractères spéciaux à la colonne "Trash"
         if original_value != processed_value:
-            trash_reasons.append({"keyword": original_value, "reason": "special_chars_replaced"})
+            trash_reasons.append({
+                "conserved": processed_value,
+                "removed": original_value,
+                "reason": "special_chars_replaced"
+            })
 
         is_unique = True
         for unique in unique_values:
             if array_equals(sorted(unique.split(" ")), words):
-                trash_reasons.append({"keyword": processed_value, "reason": "array_equals"})
+                trash_reasons.append({
+                    "conserved": unique,
+                    "removed": processed_value,
+                    "reason": "array_equals"
+                })
                 is_unique = False
                 break
 
         if is_unique and processed_value:
             unique_values.append(processed_value)
         elif not processed_value:
-            trash_reasons.append({"keyword": raw_value, "reason": "process_value"})
+            trash_reasons.append({
+                "conserved": "",
+                "removed": raw_value,
+                "reason": "process_value"
+            })
 
     # Vérifier la distance de Levenshtein
     for i in range(len(unique_values)):
         for j in range(i + 1, len(unique_values)):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
-                trash_reasons.append({"keyword": unique_values[j], "reason": "levenshtein_distance"})
+                trash_reasons.append({
+                    "conserved": unique_values[i],
+                    "removed": unique_values[j],
+                    "reason": "levenshtein_distance"
+                })
                 removed_indices.append(j)
 
     final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
