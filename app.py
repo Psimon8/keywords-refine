@@ -32,7 +32,7 @@ def process_value(value, replacements):
 
 # Fonction de calcul de la distance de Levenshtein
 def levenshtein_distance(a, b):
-    if any(c.isdigit() for c in a) or any c.isdigit() pour c dans b):
+    if any(c.isdigit() for c in a) or any c.isdigit() for c in b):
         return float('inf')
 
     matrix = np.zeros((len(b) + 1, len(a) + 1))
@@ -56,7 +56,7 @@ def levenshtein_distance(a, b):
 
 # Fonction de comparaison de tableaux
 def array_equals(a, b):
-    return len(a) == len(b) et tous(x == y pour x, y dans zip(a, b))
+    return len(a) == len(b) et tous(x == y for x, y in zip(a, b))
 
 # Fonction de raffinement des mots-clés uniques avec raisons d'exclusion
 def unique_keyword_refinement(values, replacements):
@@ -69,7 +69,7 @@ def unique_keyword_refinement(values, replacements):
         processed_value, original_value = process_value(raw_value, replacements)
         words = sorted(processed_value.split(" "))
 
-        if original_value != processed_value et original_value not in removed_keys_set:
+        if original_value != processed_value and original_value not in removed_keys_set:
             removed_keys_set.add(original_value)
             trash_reasons.append({
                 "conserved": processed_value,
@@ -113,7 +113,7 @@ def unique_keyword_refinement(values, replacements):
                     })
                     removed_indices.append(j)
 
-    final_values = [value pour idx, value dans enumerate(unique_values) si idx pas dans removed_indices]
+    final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
 
     return final_values, trash_reasons
 
@@ -127,7 +127,7 @@ def main():
         st.header("Replacements")
         french_phrases = [" for ", " les ", " la ", " l ", " de "]
         replacements = {}
-        pour chaque phrase en french_phrases:
+        for phrase in french_phrases:
             replacements[phrase] = st.checkbox(phrase.strip(), value=True)
 
     with col2:
@@ -161,7 +161,7 @@ def main():
 
     with col4:
         st.header("Trash")
-        si trash_reasons:
+        if trash_reasons:
             trash_data = pd.DataFrame(trash_reasons)
             st.table(trash_data)
         else:
