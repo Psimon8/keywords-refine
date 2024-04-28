@@ -38,7 +38,7 @@ def levenshtein_distance(a, b):
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
         matrix[i][0] = i
-    for j en range  (1, len(a) + 1):
+    for j in range  (1, len(a) + 1):
         matrix[0][j] = j
 
     for i in range(1, len(b) + 1):
