@@ -35,13 +35,13 @@ def process_value(value, replacements):
 
 # Fonction de calcul de la distance de Levenshtein
 def levenshtein_distance(a, b):
-    if any(c.isdigit() for c in a) or any(c.isdigit() for c in b):
+    if any c.isdigit() for c in a) or any c.isdigit() for c in b:
         return float('inf')
 
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
         matrix[i][0] = i
-    for j in range  (1, len(a) + 1):
+    for j in range(1, len(a) + 1):
         matrix[0][j] = j
 
     for i in range(1, len(b) + 1):
@@ -59,21 +59,22 @@ def levenshtein_distance(a, b):
 
 # Fonction de comparaison de tableaux
 def array_equals(a, b):
-    return len(a) == len(b) and all(x == y for x, y in zip(a, b))
+    return len(a) == len(b) and all(x == y pour x, y in zip(a, b))
 
 # Fonction de raffinement des mots-clés uniques avec raisons d'exclusion
 def unique_keyword_refinement(values, replacements):
     unique_values = []
     removed_indices = []
     trash_reasons = []
+    removed_keys_set = set()  # Utilisé pour éviter les doublons
 
     # Traiter chaque mot-clé
     for raw_value in values:
         processed_value, original_value = process_value(raw_value, replacements)
         words = sorted(processed_value.split(" "))
 
-        # Ajouter les mots-clés avec caractères spéciaux à la colonne "Trash"
-        if original_value != processed_value:
+        if original_value != processed_value and original_value not in removed_keys_set:
+            removed_keys_set.add(original_value)  # Ajouter à l'ensemble
             trash_reasons.append({
                 "conserved": processed_value,
                 "removed": original_value,
@@ -83,33 +84,39 @@ def unique_keyword_refinement(values, replacements):
         is_unique = True
         for unique in unique_values:
             if array_equals(sorted(unique.split(" ")), words):
-                trash_reasons.append({
-                    "conserved": unique,
-                    "removed": processed_value,
-                    "reason": "array_equals"
-                })
+                if original_value not in removed_keys_set:
+                    removed_keys_set.add(original_value)  # Ajouter à l'ensemble
+                    trash_reasons.append({
+                        "conserved": unique,
+                        "removed": processed_value,
+                        "reason": "array_equals"
+                    })
                 is_unique = False
                 break
 
         if is_unique and processed_value:
             unique_values.append(processed_value)
         elif not processed_value:
-            trash_reasons.append({
-                "conserved": "",
-                "removed": raw_value,
-                "reason": "process_value"
-            })
+            if original_value not in removed_keys_set:
+                removed_keys_set.add(original_value)  # Ajouter à l'ensemble
+                trash_reasons.append({
+                    "conserved": "",
+                    "removed": raw_value,
+                    "reason": "process_value"
+                })
 
     # Vérifier la distance de Levenshtein
     for i in range(len(unique_values)):
         for j in range(i + 1, len(unique_values)):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
-                trash_reasons.append({
-                    "conserved": unique_values[i],
-                    "removed": unique_values[j],
-                    "reason": "levenshtein_distance"
-                })
-                removed_indices.append(j)
+                if unique_values[j] not in removed_keys_set:
+                    removed_keys_set.add(unique_values[j])  # Ajouter à l'ensemble
+                    trash_reasons.append({
+                        "conserved": unique_values[i],
+                        "removed": unique_values[j],
+                        "reason": "levenshtein_distance"
+                    })
+                    removed_indices.append(j)
 
     final_values = [value for idx, value in enumerate(unique_values) if idx not in removed_indices]
 
@@ -143,7 +150,7 @@ def main():
 
     with col4:
         st.header("Trash")
-        if trash_reasons:
+        si trash_reasons:
             trash_data = pd.DataFrame(trash_reasons)
             st.table(trash_data)
         else:
