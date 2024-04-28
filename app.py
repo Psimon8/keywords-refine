@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import re
-from io import BytesIO  # Pour convertir le DataFrame en un flux binaire pour téléchargement
 
 # Configuration de la page Streamlit
 st.set_page_config(
@@ -19,16 +18,20 @@ def process_value(value, replacements):
         "ñ": "n", "'": " ", ".": " ", " ": " ", "-": " ", "â": "a"
     }
 
-    original_value = value
+    original_value = value  # Conserver la valeur originale
+    # Remplacer les caractères spéciaux
     for key, replacement in special_chars_map.items():
         value = value.replace(key, replacement)
 
+    # Appliquer des remplacements spécifiques
     for phrase, apply_replacement in replacements.items():
         if apply_replacement:
             value = value.replace(phrase, " ")
 
+    # Normaliser et supprimer les espaces superflus
     value = re.sub(r"\s+", " ", value.lower()).strip()
-    return value, original_value
+
+    return value, original_value  # Retourner la valeur traitée et originale
 
 # Fonction de calcul de la distance de Levenshtein
 def levenshtein_distance(a, b):
@@ -38,7 +41,7 @@ def levenshtein_distance(a, b):
     matrix = np.zeros((len(b) + 1, len(a) + 1))
     for i in range(len(b) + 1):
         matrix[i][0] = i
-    for j in range  (1, len(a) + 1):
+    for j in range(1, len(a) + 1):
         matrix[0][j] = j
 
     for i in range(1, len(b) + 1):
@@ -65,12 +68,13 @@ def unique_keyword_refinement(values, replacements):
     trash_reasons = []
     removed_keys_set = set()  # Utilisé pour éviter les doublons
 
+    # Traiter chaque mot-clé
     for raw_value in values:
         processed_value, original_value = process_value(raw_value, replacements)
         words = sorted(processed_value.split(" "))
 
         if original_value != processed_value and original_value not in removed_keys_set:
-            removed_keys_set.add(original_value)
+            removed_keys_set.add(original_value)  # Ajouter à l'ensemble
             trash_reasons.append({
                 "conserved": processed_value,
                 "removed": original_value,
@@ -81,7 +85,7 @@ def unique_keyword_refinement(values, replacements):
         for unique in unique_values:
             if array_equals(sorted(unique.split(" ")), words):
                 if original_value not in removed_keys_set:
-                    removed_keys_set.add(original_value)
+                    removed_keys_set.add(original_value)  # Ajouter à l'ensemble
                     trash_reasons.append({
                         "conserved": unique,
                         "removed": processed_value,
@@ -94,18 +98,19 @@ def unique_keyword_refinement(values, replacements):
             unique_values.append(processed_value)
         elif not processed_value:
             if original_value not in removed_keys_set:
-                removed_keys_set.add(original_value)
+                removed_keys_set.add(original_value)  # Ajouter à l'ensemble
                 trash_reasons.append({
                     "conserved": "",
                     "removed": raw_value,
                     "reason": "process_value"
                 })
 
+    # Vérifier la distance de Levenshtein
     for i in range(len(unique_values)):
         for j in range(i + 1, len(unique_values)):
             if levenshtein_distance(unique_values[i], unique_values[j]) <= 1:
                 if unique_values[j] not in removed_keys_set:
-                    removed_keys_set.add(unique_values[j])
+                    removed_keys_set.add(unique_values[j])  # Ajouter à l'ensemble
                     trash_reasons.append({
                         "conserved": unique_values[i],
                         "removed": unique_values[j],
@@ -142,22 +147,6 @@ def main():
 
             keyword_data = pd.DataFrame({"Unique Keywords": final_values})
             st.table(keyword_data)
-
-            # Créer un flux binaire pour le fichier Excel
-            output = BytesIO()
-            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-                keyword_data.to_excel(writer, sheet_name="Unique Keywords", index=False)
-                writer.save()
-            # Positionner le curseur au début du flux
-            output.seek(0)
-
-            # Ajouter un bouton de téléchargement
-            st.download_button(
-                label="Télécharger les mots-clés uniques",
-                data=output,
-                file_name="unique_keywords.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
 
     with col4:
         st.header("Trash")
